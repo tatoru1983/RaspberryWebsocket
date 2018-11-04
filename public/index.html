@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <title>Garage casa Aprano</title>
+</head>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+<link rel="stylesheet" href="css/style.css">
+<body>
+<div class="container">
+  <div class="jumbotron">
+    <h1>Garage casa Aprano  <span class="glyphicon glyphicon-home"><span class="glyphicon glyphicon-flash"></h1> 
+    <p>Premere i pulsanti per aprire e chiudere la saracinesca</p> 
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <button class="btn btn-lg btn-primary btn-circle" id="up" value="UP" title="UP!"><i class="fa fa-arrow-up"></i></button>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <button class="btn btn-lg btn-primary btn-circle" id="down" value="DOWN" title="DOWN!"><i class="fa fa-arrow-down"></i></button>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+	<hr />
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+    </div>
+    <div class="col">
+      <button class="btn btn-lg btn-danger btn-circle" id="stop" value="STOP" title="STOP!!!"><i class="fa fa-times"></i></button>
+    </div>
+    <div class="col">
+    </div>
+  </div>
+</div>
+<!--<input id="up" value="UP" type="button"/>-->
+<!--<input id="down" value="DOWN" type="button"/>-->
+<!--<input id="stop" value="STOP" type="button"/>-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+<script>
+var socket = io(); //load socket.io-client and connect to the host that serves the page
+
+window.addEventListener("load", function(){ //when page loads
+
+  var buttonUp = document.getElementById("up");
+  var buttonDown = document.getElementById("down");
+  var buttonStop = document.getElementById("stop");
+  
+  buttonUp.addEventListener("mousedown", function() { //add event listener for when checkbox changes
+    socket.emit("up", "up");
+  });
+  
+  buttonUp.addEventListener("touchstart", function() { //add event listener for when checkbox changes
+    socket.emit("up", "up");
+  });
+  
+  buttonUp.addEventListener("pointerdown", function() { //add event listener for when checkbox changes
+    socket.emit("up", "up");
+  });
+  
+  buttonUp.addEventListener("mouseup", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonUp.addEventListener("touchend", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonUp.addEventListener("pointerup", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonDown.addEventListener("mousedown", function() { //add event listener for when checkbox changes
+    socket.emit("down", "down");
+  });
+  
+  buttonDown.addEventListener("touchstart", function() { //add event listener for when checkbox changes
+    socket.emit("down", "down");
+  });
+  
+  buttonDown.addEventListener("pointerdown", function() { //add event listener for when checkbox changes
+    socket.emit("down", "down");
+  });
+  
+  buttonDown.addEventListener("mouseup", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonDown.addEventListener("touchend", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonDown.addEventListener("pointerup", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+  
+  buttonStop.addEventListener("click", function() { //add event listener for when checkbox changes
+    socket.emit("stop", "stop");
+  });
+});
+
+/*socket.on('light', function (data) { //get button status from client
+  document.getElementById("light").checked = data; //change checkbox according to push button on Raspberry Pi
+  socket.emit("light", data); //send push button status to back to server
+});*/
+</script>
+<style>
+.btn-circle, .btn-circle-3d{
+  border-radius: 50% !important;
+  font-size: 150px;
+  width: 250px;
+  height: 250px;
+}
+
+.btn-primary.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #245580;
+  -moz-box-shadow:    0px 0px 3px 1px #245580;
+  box-shadow:         0px 0px 3px 1px #245580;
+}
+
+.btn-info.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #28a4c9;
+  -moz-box-shadow:    0px 0px 3px 1px #28a4c9;
+  box-shadow:         0px 0px 3px 1px #28a4c9;
+}
+
+.btn-success.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #3e8f3e;
+  -moz-box-shadow:    0px 0px 3px 1px #3e8f3e;
+  box-shadow:         0px 0px 3px 1px #3e8f3e;
+}
+
+.btn-danger.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #b92c28;
+  -moz-box-shadow:    0px 0px 3px 1px #b92c28;
+  box-shadow:         0px 0px 3px 1px #b92c28;
+}
+
+.btn-warning.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #e38d13;
+  -moz-box-shadow:    0px 0px 3px 1px #e38d13;
+  box-shadow:         0px 0px 3px 1px #e38d13;
+}
+
+.btn-default.btn-circle{
+  -webkit-box-shadow: 0px 0px 3px 1px #ccc;
+  -moz-box-shadow:    0px 0px 3px 1px #ccc;
+  box-shadow:         0px 0px 3px 1px #ccc;
+}
+</style>
+</html>
+</body>
+</html>
