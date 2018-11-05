@@ -5,6 +5,8 @@ var io = require('socket.io')(http) //require socket.io module and pass the http
 var Gpio = require('onoff').Gpio;
 var rly1 = new Gpio(17, 'out');
 var rly2 = new Gpio(18, 'out');
+  rly1.writeSync(1);	//0 = acceso - 1 = spento
+  rly2.writeSync(1);	//0 = acceso - 1 = spento
 
 http.listen(8080); //listen to port 8080
 
@@ -26,28 +28,28 @@ io.sockets.on('connection', function (socket) {// WebSocket Connection
   socket.on('up', function(data) { //get light switch status from client
     lightvalue = data;
     console.log(lightvalue);
-	rly1.writeSync(0);
-	rly2.writeSync(1);
+	rly1.writeSync(1);
+	rly2.writeSync(0);
   });
   
   socket.on('down', function(data) { //get light switch status from client
     lightvalue = data;
     console.log(lightvalue);
-	rly2.writeSync(0);
-	rly1.writeSync(1);
+	rly2.writeSync(1);
+	rly1.writeSync(0);
   });
   
   socket.on('stop', function(data) { //get light switch status from client
     lightvalue = data;
     console.log(lightvalue);
-	rly1.writeSync(0);
-	rly2.writeSync(0);
+	rly1.writeSync(1);
+	rly2.writeSync(1);
   });
 });
 
 process.on('SIGINT', function () { //on ctrl+c
-  rly1.writeSync(0);
-  rly2.writeSync(0);
+  rly1.writeSync(1);
+  rly2.writeSync(1);
   console.log('process.exit');
   process.exit(); //exit completely
 });
