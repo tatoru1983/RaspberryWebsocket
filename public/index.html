@@ -3,6 +3,7 @@
 <head>
  <title>Garage casa Aprano</title>
 </head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
@@ -12,7 +13,9 @@
 <div class="container">
   <div class="jumbotron">
     <h1>Garage casa Aprano  <span class="glyphicon glyphicon-home"><span class="glyphicon glyphicon-flash"></h1> 
-    <p>Premere i pulsanti per aprire e chiudere la saracinesca</p> 
+    <p>Premere i pulsanti per aprire e chiudere la saracinesca</p>
+    <p>Posizione: <span id='result'>0</span> <span id='apertochiuso'>Chiuso</span></p>
+  <input type="range" min="0" max="100" value="0" class="slider" id="garageRange" disabled="true">
   </div>
 </div>
 <div class="container">
@@ -62,57 +65,130 @@ window.addEventListener("load", function(){ //when page loads
   var buttonDown = document.getElementById("down");
   var buttonStop = document.getElementById("stop");
   
-  buttonUp.addEventListener("mousedown", function() { //add event listener for when checkbox changes
+  var $result=$('#result');
+  var $apertochiuso=$('#apertochiuso');
+  var $garageRange=$('#garageRange');
+  var number=0;
+  var isDown=0;
+  var delay=100;
+  var nextTime=0;
+
+  requestAnimationFrame(watcher);
+  
+  buttonUp.addEventListener("mousedown", function(e) {
+	handleMouseDownAdd(e);
     socket.emit("up", "up");
   });
   
-  buttonUp.addEventListener("touchstart", function() { //add event listener for when checkbox changes
+  buttonUp.addEventListener("pointerdown", function(e) {
+	handleMouseDownAdd(e);
     socket.emit("up", "up");
   });
   
-  buttonUp.addEventListener("pointerdown", function() { //add event listener for when checkbox changes
+  buttonUp.addEventListener("touchstart", function(e) {
+	handleMouseDownAdd(e);
     socket.emit("up", "up");
   });
   
-  buttonUp.addEventListener("mouseup", function() { //add event listener for when checkbox changes
+  buttonUp.addEventListener("mouseup", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonUp.addEventListener("touchend", function() { //add event listener for when checkbox changes
+  buttonUp.addEventListener("touchend", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonUp.addEventListener("pointerup", function() { //add event listener for when checkbox changes
+  buttonUp.addEventListener("pointerup", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonDown.addEventListener("mousedown", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("mousedown", function(e) {
+	handleMouseDownSubtract(e);
     socket.emit("down", "down");
   });
   
-  buttonDown.addEventListener("touchstart", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("touchstart", function(e) {
+	handleMouseDownSubtract(e);
     socket.emit("down", "down");
   });
   
-  buttonDown.addEventListener("pointerdown", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("pointerdown", function(e) {
+	handleMouseDownSubtract(e);
     socket.emit("down", "down");
   });
   
-  buttonDown.addEventListener("mouseup", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("mouseup", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonDown.addEventListener("touchend", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("touchend", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonDown.addEventListener("pointerup", function() { //add event listener for when checkbox changes
+  buttonDown.addEventListener("pointerup", function(e) {
+	handleMouseUp(e);
     socket.emit("stop", "stop");
   });
   
-  buttonStop.addEventListener("click", function() { //add event listener for when checkbox changes
+  buttonStop.addEventListener("click", function(e) {
+	console.log("click");
     socket.emit("stop", "stop");
   });
+  
+  function handleMouseDownAdd(e){
+	// tell the browser we're handling this event
+	e.preventDefault();
+	e.stopPropagation();
+
+	// Put your mousedown stuff here
+	isDown=1;
+	}
+  
+  function handleMouseDownSubtract(e){
+	// tell the browser we're handling this event
+	e.preventDefault();
+	e.stopPropagation();
+
+	// Put your mousedown stuff here
+	console.log(e);
+	isDown=-1;
+	}
+  
+  function handleMouseUp(e){
+	// tell the browser we're handling this event
+	e.preventDefault();
+	e.stopPropagation();
+
+	// Put your mouseup stuff here
+	isDown=0;
+	}
+
+  function watcher(time){
+	requestAnimationFrame(watcher);
+	if(time<nextTime){return;}
+		nextTime=time+delay;
+		if(isDown!==0){
+			if(number+isDown>=0 && number+isDown<=100){
+				//console.log("number+isDown "+(number+isDown));
+				number+=isDown;
+				$result.text(number);
+				document.getElementById("garageRange").value=number;
+				socket.emit("logpos", number);
+				if(number == 0){
+					$apertochiuso.text('Chiuso');
+				}else if(number == 100){
+					$apertochiuso.text('Aperto');
+				}else{
+					$apertochiuso.text('In apertura');
+				}
+			}
+		}
+	}
 });
 
 /*socket.on('light', function (data) { //get button status from client
@@ -162,6 +238,37 @@ window.addEventListener("load", function(){ //when page loads
   -webkit-box-shadow: 0px 0px 3px 1px #ccc;
   -moz-box-shadow:    0px 0px 3px 1px #ccc;
   box-shadow:         0px 0px 3px 1px #ccc;
+}
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 40px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.slider:hover {
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 40px;
+  height: 40px;
+  background: #4CAF50;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  width: 40px;
+  height: 40px;
+  background: #4CAF50;
+  cursor: pointer;
 }
 </style>
 </html>

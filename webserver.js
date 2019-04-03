@@ -27,29 +27,33 @@ io.sockets.on('connection', function (socket) {// WebSocket Connection
   
   socket.on('up', function(data) { //get light switch status from client
     lightvalue = data;
-    console.log(lightvalue);
+    //console.log(lightvalue);
 	rly1.writeSync(1);
 	rly2.writeSync(0);
   });
   
   socket.on('down', function(data) { //get light switch status from client
     lightvalue = data;
-    console.log(lightvalue);
+    //console.log(lightvalue);
 	rly2.writeSync(1);
 	rly1.writeSync(0);
   });
   
   socket.on('stop', function(data) { //get light switch status from client
     lightvalue = data;
-    console.log(lightvalue);
+    //console.log(lightvalue);
 	rly1.writeSync(1);
 	rly2.writeSync(1);
+  });
+  
+  socket.on('logpos', function(data) {
+    console.log(data);
   });
 });
 
 process.on('SIGINT', function () { //on ctrl+c
   rly1.writeSync(1);
   rly2.writeSync(1);
-  console.log('process.exit');
+  //console.log('process.exit');
   process.exit(); //exit completely
 });
